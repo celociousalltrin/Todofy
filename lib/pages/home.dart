@@ -28,7 +28,9 @@ class _HomepageState extends State<Homepage> {
   }
 
   void onDelete(id) {
-    print("The value is clicked $id");
+    setState(() {
+      myData = myData.where((o) => o["id"] != id).toList();
+    });
   }
 
   void handleOpen() {
