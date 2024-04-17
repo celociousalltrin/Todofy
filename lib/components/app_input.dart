@@ -4,18 +4,18 @@ class AppCustomInput extends StatelessWidget {
   final bool obscureText;
   final String hintText;
   final String title;
-  final void Function(String)? onChange;
   final String? Function(String?)? validator;
   final bool isTrigerValidate;
+  final void Function(String?)? onSave;
 
   const AppCustomInput(
       {super.key,
       this.obscureText = false,
       required this.hintText,
       required this.title,
-      this.onChange,
       required this.isTrigerValidate,
-      this.validator});
+      this.validator,
+      this.onSave});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +29,8 @@ class AppCustomInput extends StatelessWidget {
           hintText: hintText,
           border: const OutlineInputBorder()),
       style: const TextStyle(color: Colors.black),
-      onChanged: onChange,
       validator: validator,
+      onSaved: onSave,
     );
   }
 }

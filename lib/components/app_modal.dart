@@ -3,7 +3,10 @@ import 'package:flutter_application_1/components/app_input.dart';
 import 'package:flutter_application_1/utils/validation.dart';
 
 class AppModel extends StatefulWidget {
-  const AppModel({super.key});
+  final void Function() handleClose;
+  final void Function(String) handleAddData;
+  const AppModel(
+      {super.key, required this.handleClose, required this.handleAddData});
 
   @override
   State<AppModel> createState() => _AppModelState();
@@ -13,8 +16,11 @@ class _AppModelState extends State<AppModel> {
   final _formkey = GlobalKey<FormState>();
 
   bool isTrigerValidate = false;
+  Map<String, dynamic> result = {"title": "", "email": "", "password": ""};
 
-  var hanldeChange = (String value, String name) {};
+  void handleSave(String? value, String title) {
+    result[title] = value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +39,12 @@ class _AppModelState extends State<AppModel> {
                       AppCustomInput(
                         hintText: "Enter title",
                         title: "Title",
-                        onChange: (value) {
-                          hanldeChange(value, "title");
-                        },
                         isTrigerValidate: isTrigerValidate,
                         validator: (value) {
                           return value!.titleValidation;
+                        },
+                        onSave: (value) {
+                          handleSave(value, "title");
                         },
                       ),
                       const SizedBox(
@@ -47,12 +53,12 @@ class _AppModelState extends State<AppModel> {
                       AppCustomInput(
                         hintText: "email",
                         title: "Email",
-                        onChange: (value) {
-                          hanldeChange(value, "email");
-                        },
                         isTrigerValidate: isTrigerValidate,
                         validator: (value) {
                           return value!.emailValidation;
+                        },
+                        onSave: (value) {
+                          handleSave(value, "email");
                         },
                       ),
                       const SizedBox(
@@ -62,13 +68,13 @@ class _AppModelState extends State<AppModel> {
                         obscureText: true,
                         hintText: "Enter Password",
                         title: "Password",
-                        onChange: (value) {
-                          hanldeChange(value, "password");
-                        },
                         validator: (value) {
                           return value!.passwordValidation;
                         },
                         isTrigerValidate: isTrigerValidate,
+                        onSave: (value) {
+                          handleSave(value, "password");
+                        },
                       ),
                       const SizedBox(
                         height: 30,
@@ -76,7 +82,9 @@ class _AppModelState extends State<AppModel> {
                       ElevatedButton(
                           onPressed: () {
                             if (_formkey.currentState!.validate()) {
-                              print("Fireee");
+                              _formkey.currentState!.save();
+                              widget.handleAddData(result["title"]);
+                              widget.handleClose();
                             } else {
                               setState(() {
                                 isTrigerValidate = true;

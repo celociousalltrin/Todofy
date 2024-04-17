@@ -22,6 +22,6 @@ extension ValidateString on String {
     if (passwordRegex.hasMatch(this)) {
       return null;
     }
-    return "Email needs to be valid";
+    return "Password needs to be valid";
   }
 }

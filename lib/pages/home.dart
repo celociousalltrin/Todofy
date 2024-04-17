@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/List_container.dart';
 import 'package:flutter_application_1/components/app_modal.dart';
@@ -33,11 +35,27 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
+  void handleClose() {
+    Navigator.of(context).pop();
+  }
+
+  void handleAddData(value) {
+    setState(() {
+      myData.add({
+        "id": Random().nextInt(1000),
+        "title": value,
+        "is_completed": false,
+        "is_deleted": false
+      });
+    });
+  }
+
   void handleOpen() {
     showDialog(
         context: context,
         builder: (context) {
-          return AppModel();
+          return AppModel(
+              handleClose: handleClose, handleAddData: handleAddData);
         });
   }
 
@@ -45,7 +63,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Home Page"),
+          title: const Text("Home Page"),
           backgroundColor: Colors.yellow.shade600,
           centerTitle: true,
         ),
