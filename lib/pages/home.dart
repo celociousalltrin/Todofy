@@ -51,12 +51,12 @@ class _HomepageState extends State<Homepage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: handleOpen,
+          backgroundColor: Colors.yellow.shade900,
+          foregroundColor: Colors.white,
           child: const Icon(
             Icons.add,
             size: 36,
           ),
-          backgroundColor: Colors.yellow.shade900,
-          foregroundColor: Colors.white,
         ),
         body: ListView.builder(
             itemCount: myData.length,
