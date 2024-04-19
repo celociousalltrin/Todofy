@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_input.dart';
 import 'package:flutter_application_1/utils/validation.dart';
 
@@ -20,6 +21,22 @@ class _AppModelState extends State<AppModel> {
 
   void handleSave(String? value, String title) {
     result[title] = value;
+  }
+
+  void onPressed() {
+    if (_formkey.currentState!.validate()) {
+      _formkey.currentState!.save();
+      widget.handleAddData(result["title"]);
+      widget.handleClose();
+    } else {
+      setState(() {
+        isTrigerValidate = true;
+      });
+    }
+  }
+
+  void onClose() {
+    widget.handleClose();
   }
 
   @override
@@ -79,28 +96,27 @@ class _AppModelState extends State<AppModel> {
                       const SizedBox(
                         height: 30,
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            if (_formkey.currentState!.validate()) {
-                              _formkey.currentState!.save();
-                              widget.handleAddData(result["title"]);
-                              widget.handleClose();
-                            } else {
-                              setState(() {
-                                isTrigerValidate = true;
-                              });
-                            }
-                          },
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.black87)),
-                          child: const Text(
-                            "Create",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15),
-                          ))
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          AppButton(
+                            onPressed: onPressed,
+                            btnName: "Create",
+                          ),
+                          AppButton(
+                            onPressed: onClose,
+                            btnName: "Cancel",
+                            btnTxtStyle: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900),
+                            btnStyle: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all<
+                                        Color>(
+                                    const Color.fromARGB(255, 235, 27, 24))),
+                          )
+                        ],
+                      )
                     ],
                   )),
             ),
