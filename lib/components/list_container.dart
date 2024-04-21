@@ -1,15 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_application_1/components/app_modal.dart';
 
 class ListContainer extends StatelessWidget {
   final Map<String, dynamic> data;
-  Function(bool?, num) onToggle;
-  Function(num) onDelete;
+  final Function(bool?, num) onToggle;
+  final Function(num) onDelete;
 
-  ListContainer(
+  const ListContainer(
       {super.key,
       required this.data,
       required this.onToggle,

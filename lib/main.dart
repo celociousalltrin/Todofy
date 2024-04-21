@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/index.dart';
+import 'package:flutter_application_1/utils/common_data.dart';
 
 void main() {
   runApp(const MainApp());
@@ -18,7 +19,9 @@ class MainApp extends StatelessWidget {
       title: "My FLutter App",
       theme: myTheme,
       debugShowCheckedModeBanner: false,
-      home: AppMainPage(),
+      initialRoute: "/",
+      routes: appRoutes,
+      home: const AppMainPage(),
     );
   }
 }
