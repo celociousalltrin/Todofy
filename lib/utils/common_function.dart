@@ -14,6 +14,7 @@ List<TodoModel> updateList(
       return TodoModel(
           title: item.title,
           id: item.id,
+          description: item.description,
           is_completed: isKey(key, "is_completed") ? value : item.is_completed,
           is_deleted: isKey(key, "is_deleted") ? value : item.is_deleted);
     } else {
