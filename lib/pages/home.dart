@@ -58,13 +58,15 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
-  void onCreate() {
+  void onCreate(StateSetter stflbrSetState) {
     if (formkey.currentState!.validate()) {
       formkey.currentState!.save();
       handleAddData(result["title"]);
       handleClose();
     } else {
-      isTrigerValidate = true;
+      stflbrSetState(() {
+        isTrigerValidate = true;
+      });
     }
     print("sdaasdsa $isTrigerValidate");
   }
@@ -73,13 +75,19 @@ class _HomepageState extends State<Homepage> {
     showDialog(
         context: context,
         builder: (context) {
-          return AppModel(
-              handleClose: handleClose,
-              handleAddData: handleAddData,
-              formKey: formkey,
-              isTrigerValidate: isTrigerValidate,
-              handleSave: handleSave,
-              onCreate: onCreate);
+          return StatefulBuilder(
+            builder: (context, StateSetter stflbrSetState) {
+              return AppModel(
+                  handleClose: handleClose,
+                  handleAddData: handleAddData,
+                  formKey: formkey,
+                  isTrigerValidate: isTrigerValidate,
+                  handleSave: handleSave,
+                  onCreate: () {
+                    onCreate(stflbrSetState);
+                  });
+            },
+          );
         });
   }
 
