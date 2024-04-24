@@ -27,7 +27,6 @@ class AppModel extends StatefulWidget {
 class _AppModelState extends State<AppModel> {
   @override
   Widget build(BuildContext context) {
-    print("TRhe trigger Validate ${widget.isTrigerValidate}");
     return AlertDialog(
       backgroundColor: Colors.yellow.shade300,
       content: SizedBox(

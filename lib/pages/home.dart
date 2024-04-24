@@ -44,7 +44,6 @@ class _HomepageState extends State<Homepage> {
 
   void handleClose() {
     Navigator.of(context).pop();
-    isTrigerValidate = false;
   }
 
   void handleAddData(value) {
@@ -68,7 +67,6 @@ class _HomepageState extends State<Homepage> {
         isTrigerValidate = true;
       });
     }
-    print("sdaasdsa $isTrigerValidate");
   }
 
   void handleOpen() {
