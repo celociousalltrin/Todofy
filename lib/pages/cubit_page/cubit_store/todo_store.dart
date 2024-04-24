@@ -30,7 +30,19 @@ class TodoModel {
 }
 
 class TodoStore extends Cubit<List<TodoModel>> {
-  TodoStore() : super([]);
+  TodoStore()
+      : super([
+          TodoModel(
+              title: "First Task",
+              description: "Test Descriptyion",
+              id: Random().nextInt(1000)),
+          TodoModel(
+              title: "Second Task",
+              is_completed: true,
+              description:
+                  "You can wrap your existing Padding widget with another Padding widget to add margins around the existing widget. Here's how you can do it:",
+              id: Random().nextInt(1000)),
+        ]);
 
   void addTodo(Map<String, String> input) {
     TodoModel data = TodoModel(

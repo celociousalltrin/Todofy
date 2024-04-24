@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppCustomInput extends StatelessWidget {
   final bool obscureText;
+  final bool isMultiLineText;
   final String hintText;
   final String title;
   final String? Function(String?)? validator;
@@ -11,6 +12,7 @@ class AppCustomInput extends StatelessWidget {
   const AppCustomInput(
       {super.key,
       this.obscureText = false,
+      this.isMultiLineText = false,
       required this.hintText,
       required this.title,
       required this.isTrigerValidate,
@@ -20,6 +22,7 @@ class AppCustomInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLines: isMultiLineText ? 2 : 1,
       autovalidateMode: isTrigerValidate
           ? AutovalidateMode.onUserInteraction
           : AutovalidateMode.disabled,

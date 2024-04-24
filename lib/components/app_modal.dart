@@ -6,41 +6,28 @@ import 'package:flutter_application_1/utils/validation.dart';
 class AppModel extends StatefulWidget {
   final void Function() handleClose;
   final void Function(String) handleAddData;
+  final GlobalKey<FormState> formKey;
+  final bool isTrigerValidate;
+  final void Function(String?, String) handleSave;
+  final void Function() onCreate;
+
   const AppModel(
-      {super.key, required this.handleClose, required this.handleAddData});
+      {super.key,
+      required this.handleClose,
+      required this.handleAddData,
+      required this.formKey,
+      required this.handleSave,
+      required this.onCreate,
+      required this.isTrigerValidate});
 
   @override
   State<AppModel> createState() => _AppModelState();
 }
 
 class _AppModelState extends State<AppModel> {
-  final _formkey = GlobalKey<FormState>();
-
-  bool isTrigerValidate = false;
-  Map<String, dynamic> result = {"title": "", "email": "", "password": ""};
-
-  void handleSave(String? value, String title) {
-    result[title] = value;
-  }
-
-  void onPressed() {
-    if (_formkey.currentState!.validate()) {
-      _formkey.currentState!.save();
-      widget.handleAddData(result["title"]);
-      widget.handleClose();
-    } else {
-      setState(() {
-        isTrigerValidate = true;
-      });
-    }
-  }
-
-  void onClose() {
-    widget.handleClose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    print("TRhe trigger Validate ${widget.isTrigerValidate}");
     return AlertDialog(
       backgroundColor: Colors.yellow.shade300,
       content: SizedBox(
@@ -50,18 +37,18 @@ class _AppModelState extends State<AppModel> {
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Form(
-                  key: _formkey,
+                  key: widget.formKey,
                   child: Column(
                     children: [
                       AppCustomInput(
                         hintText: "Enter title",
                         title: "Title",
-                        isTrigerValidate: isTrigerValidate,
+                        isTrigerValidate: widget.isTrigerValidate,
                         validator: (value) {
                           return value!.titleValidation;
                         },
                         onSave: (value) {
-                          handleSave(value, "title");
+                          widget.handleSave(value, "title");
                         },
                       ),
                       const SizedBox(
@@ -70,12 +57,12 @@ class _AppModelState extends State<AppModel> {
                       AppCustomInput(
                         hintText: "email",
                         title: "Email",
-                        isTrigerValidate: isTrigerValidate,
+                        isTrigerValidate: widget.isTrigerValidate,
                         validator: (value) {
                           return value!.emailValidation;
                         },
                         onSave: (value) {
-                          handleSave(value, "email");
+                          widget.handleSave(value, "email");
                         },
                       ),
                       const SizedBox(
@@ -88,9 +75,9 @@ class _AppModelState extends State<AppModel> {
                         validator: (value) {
                           return value!.passwordValidation;
                         },
-                        isTrigerValidate: isTrigerValidate,
+                        isTrigerValidate: widget.isTrigerValidate,
                         onSave: (value) {
-                          handleSave(value, "password");
+                          widget.handleSave(value, "password");
                         },
                       ),
                       const SizedBox(
@@ -100,11 +87,11 @@ class _AppModelState extends State<AppModel> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           AppButton(
-                            onPressed: onPressed,
+                            onPressed: widget.onCreate,
                             btnName: "Create",
                           ),
                           AppButton(
-                            onPressed: onClose,
+                            onPressed: widget.handleClose,
                             btnName: "Cancel",
                             btnTxtStyle: const TextStyle(
                                 color: Colors.black,

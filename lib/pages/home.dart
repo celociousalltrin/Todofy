@@ -17,6 +17,13 @@ class _HomepageState extends State<Homepage> {
     {"id": 2, "title": "#2 todo", "is_completed": true, "is_deleted": false}
   ];
 
+  final formkey = GlobalKey<FormState>();
+  bool isTrigerValidate = false;
+  Map<String, dynamic> result = {"title": "", "email": "", "password": ""};
+  void handleSave(String? value, String key) {
+    result[key] = value;
+  }
+
   void onToggle(boolean, id) {
     setState(() {
       myData = myData.map((obj) {
@@ -37,6 +44,7 @@ class _HomepageState extends State<Homepage> {
 
   void handleClose() {
     Navigator.of(context).pop();
+    isTrigerValidate = false;
   }
 
   void handleAddData(value) {
@@ -50,12 +58,28 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
+  void onCreate() {
+    if (formkey.currentState!.validate()) {
+      formkey.currentState!.save();
+      handleAddData(result["title"]);
+      handleClose();
+    } else {
+      isTrigerValidate = true;
+    }
+    print("sdaasdsa $isTrigerValidate");
+  }
+
   void handleOpen() {
     showDialog(
         context: context,
         builder: (context) {
           return AppModel(
-              handleClose: handleClose, handleAddData: handleAddData);
+              handleClose: handleClose,
+              handleAddData: handleAddData,
+              formKey: formkey,
+              isTrigerValidate: isTrigerValidate,
+              handleSave: handleSave,
+              onCreate: onCreate);
         });
   }
 

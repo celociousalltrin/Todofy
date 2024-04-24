@@ -19,7 +19,7 @@ class CubitPage extends StatelessWidget {
       body: BlocBuilder<CubitStore, bool>(
           bloc: cubit,
           builder: (context, cubitStore) {
-            return Center(child: cubitStore ? TodoPage() : CounterPage());
+            return cubitStore ? TodoPage() : CounterPage();
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
