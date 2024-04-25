@@ -21,19 +21,22 @@ class AppCustomInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      maxLines: isMultiLineText ? 2 : 1,
-      autovalidateMode: isTrigerValidate
-          ? AutovalidateMode.onUserInteraction
-          : AutovalidateMode.disabled,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-          labelText: title,
-          hintText: hintText,
-          border: const OutlineInputBorder()),
-      style: const TextStyle(color: Colors.black),
-      validator: validator,
-      onSaved: onSave,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: TextFormField(
+        maxLines: isMultiLineText ? 2 : 1,
+        autovalidateMode: isTrigerValidate
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+            labelText: title,
+            hintText: hintText,
+            border: const OutlineInputBorder()),
+        style: const TextStyle(color: Colors.black),
+        validator: validator,
+        onSaved: onSave,
+      ),
     );
   }
 }

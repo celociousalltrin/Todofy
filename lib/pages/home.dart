@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/List_container.dart';
 import 'package:flutter_application_1/components/app_modal.dart';
+import 'package:flutter_application_1/utils/validation.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -17,9 +18,31 @@ class _HomepageState extends State<Homepage> {
     {"id": 2, "title": "#2 todo", "is_completed": true, "is_deleted": false}
   ];
 
+  List<Map<String, dynamic>> inputPropsData = [
+    {
+      "id": "1",
+      "name": "title",
+      "validation": (String value) => value.titleValidation,
+      "obscureText": false,
+    },
+    {
+      "id": "2",
+      "name": "email",
+      "validation": (String value) => value.emailValidation,
+      "obscureText": false,
+    },
+    {
+      "id": "3",
+      "name": "Password",
+      "validation": (String value) => value.passwordValidation,
+      "obscureText": true,
+    },
+  ];
+
   final formkey = GlobalKey<FormState>();
   bool isTrigerValidate = false;
   Map<String, dynamic> result = {"title": "", "email": "", "password": ""};
+
   void handleSave(String? value, String key) {
     result[key] = value;
   }
@@ -76,11 +99,13 @@ class _HomepageState extends State<Homepage> {
           return StatefulBuilder(
             builder: (context, StateSetter stflbrSetState) {
               return AppModel(
+                  inputPropsData: inputPropsData,
                   handleClose: handleClose,
                   handleAddData: handleAddData,
                   formKey: formkey,
                   isTrigerValidate: isTrigerValidate,
                   handleSave: handleSave,
+                  modelTitle: "Add Todo",
                   onCreate: () {
                     onCreate(stflbrSetState);
                   });
