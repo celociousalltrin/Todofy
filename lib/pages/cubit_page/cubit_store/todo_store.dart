@@ -29,38 +29,73 @@ class TodoModel {
   }
 }
 
-class TodoStore extends Cubit<List<TodoModel>> {
+class CubitTododModel {
+  List<TodoModel> todoList;
+  List<int> todoIds;
+
+  CubitTododModel({required this.todoList, required this.todoIds});
+}
+
+class TodoStore extends Cubit<CubitTododModel> {
   TodoStore()
-      : super([
-          TodoModel(
+      : super(CubitTododModel(
+          todoList: [
+            TodoModel(
               title: "First Task",
-              description: "Test Descriptyion",
-              id: Random().nextInt(1000)),
-          TodoModel(
+              description: "Test Description",
+              id: Random().nextInt(1000),
+            ),
+            TodoModel(
               title: "Second Task",
               is_completed: true,
               description:
                   "You can wrap your existing Padding widget with another Padding widget to add margins around the existing widget. Here's how you can do it:",
-              id: Random().nextInt(1000)),
-        ]);
+              id: Random().nextInt(1000),
+            ),
+          ],
+          todoIds: [],
+        ));
 
   void addTodo(Map<String, String> input) {
     TodoModel data = TodoModel(
         title: input["title"]!,
         description: input["description"]!,
         id: Random().nextInt(1000));
-    emit([...state, data]);
+
+    emit(CubitTododModel(
+      todoList: [...state.todoList, data],
+      todoIds: state.todoIds,
+    ));
   }
 
   void deleteTodo(int id) {
-    emit(updateList(data: state, id: id, todo: {"is_deleted": true}));
+    emit(CubitTododModel(
+        todoList: updateList(
+            data: state.todoList, id: id, todo: {"is_deleted": true}),
+        todoIds: state.todoIds));
   }
 
-  void completeTodo(int id) {
-    emit(updateList(data: state, id: id, todo: {"is_completed": true}));
+  void toggleCompleteTodo(int id, bool value) {
+    emit(CubitTododModel(
+        todoList: updateList(
+            data: state.todoList, id: id, todo: {"is_completed": !value}),
+        todoIds: state.todoIds));
   }
 
   void updateTodo({required int id, required Map<String, String> data}) {
-    emit(updateList(data: state, id: id, todo: data));
+    emit(CubitTododModel(
+        todoList: updateList(data: state.todoList, id: id, todo: data),
+        todoIds: state.todoIds));
+  }
+
+  void viewDescription(int id) {
+    if (state.todoIds.contains(id)) {
+      emit(CubitTododModel(
+          todoList: state.todoList,
+          todoIds: state.todoIds.where((element) => element != id).toList()));
+    } else {
+      emit(CubitTododModel(
+          todoList: state.todoList, todoIds: [...state.todoIds, id]));
+    }
   }
 }

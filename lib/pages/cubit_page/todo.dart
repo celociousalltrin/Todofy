@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/components/app_button.dart';
-import 'package:flutter_application_1/components/list_container.dart';
+import 'package:flutter_application_1/components/app_modal.dart';
 import 'package:flutter_application_1/pages/cubit_page/cubit_store/todo_store.dart';
+import 'package:flutter_application_1/utils/validation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TodoPage extends StatefulWidget {
@@ -15,6 +14,36 @@ class TodoPage extends StatefulWidget {
 
 class _TodoPageState extends State<TodoPage> {
   List<int> todoIds = [];
+
+  List<Map<String, dynamic>> inputPropsData = [
+    {
+      "id": 1,
+      "name": "title",
+      "validation": (String value) => value.titleValidation,
+      "obscureText": false
+    },
+    {
+      "id": 2,
+      "name": "description",
+      "validation": (String value) => value.descriptionvalidation,
+      "obscureText": false
+    }
+  ];
+
+  final formkey = GlobalKey<FormState>();
+
+  bool isTrigerValidate = false;
+
+  Map<String, dynamic> result = {"title": "", "description": ""};
+
+  void handleSave(String? value, String key) {
+    result[key] = value;
+  }
+
+  void handleCloseModal() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final todoState = TodoStore();
@@ -27,35 +56,35 @@ class _TodoPageState extends State<TodoPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "TODO LIST",
+                  "CUBIT TODO LIST",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 25.0,
                       fontWeight: FontWeight.bold),
                 ),
                 AppButton(
-                  onPressed: () {
-                    print("Add TODO Button is CLicked");
-                  },
+                  onPressed: () {},
                   btnName: "ADD TODO",
                 )
               ],
             ),
           ),
           Expanded(
-            child: BlocBuilder<TodoStore, List<TodoModel>>(
+            child: BlocBuilder<TodoStore, CubitTododModel>(
                 bloc: todoState,
                 builder: (context, todos) {
                   return ListView.builder(
-                      itemCount: todos.length,
+                      itemCount: todos.todoList.length,
                       itemBuilder: (context, index) {
-                        TodoModel todo = todos[index];
+                        TodoModel todo = todos.todoList[index];
                         return Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: todos[index].is_completed
-                                  ? Colors.lightGreen[500]
-                                  : Colors.amber[200],
+                              color: todo.is_deleted
+                                  ? Colors.red[400]
+                                  : todo.is_completed
+                                      ? Colors.lightGreen[500]
+                                      : Colors.amber[200],
                               border:
                                   Border.all(width: 1.0, color: Colors.black)),
                           margin: const EdgeInsets.all(10),
@@ -78,10 +107,11 @@ class _TodoPageState extends State<TodoPage> {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          print("The Is Completed is Clicked");
+                                          todoState.toggleCompleteTodo(
+                                              todo.id, todo.is_completed);
                                         },
                                         child: Icon(
-                                          todos[index].is_completed
+                                          todo.is_completed
                                               ? Icons.check_circle
                                               : Icons
                                                   .check_circle_outline_outlined,
@@ -92,7 +122,7 @@ class _TodoPageState extends State<TodoPage> {
                                       const SizedBox(width: 15),
                                       GestureDetector(
                                         onTap: () {
-                                          print("Delete Button is Clicked");
+                                          todoState.deleteTodo(todo.id);
                                         },
                                         child: const Icon(
                                           Icons.delete,
@@ -108,7 +138,8 @@ class _TodoPageState extends State<TodoPage> {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: todo.description.length > 80
+                                      text: todo.description.length > 80 &&
+                                              !todos.todoIds.contains(todo.id)
                                           ? "${todo.description.substring(0, 80)}..."
                                           : todo.description,
                                       style:
@@ -119,21 +150,10 @@ class _TodoPageState extends State<TodoPage> {
                                         alignment: PlaceholderAlignment.middle,
                                         child: GestureDetector(
                                           onTap: () {
-                                            print(todo.toMap());
-                                            setState(() {
-                                              if (todoIds.contains(todo.id)) {
-                                                todoIds = todoIds
-                                                    .where(
-                                                        (id) => id != todo.id)
-                                                    .toList();
-                                              } else {
-                                                todoIds.add(todo.id);
-                                              }
-                                            });
-                                            print(todoIds);
+                                            todoState.viewDescription(todo.id);
                                           },
                                           child: Icon(
-                                            todoIds.contains(todo.id)
+                                            todos.todoIds.contains(todo.id)
                                                 ? Icons.arrow_upward
                                                 : Icons.arrow_downward,
                                             size: 22,

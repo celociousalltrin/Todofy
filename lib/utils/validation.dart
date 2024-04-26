@@ -6,6 +6,13 @@ extension ValidateString on String {
     return "Tittle needs to be in length of 2 to 10";
   }
 
+  dynamic get descriptionvalidation {
+    if (length > 2) {
+      return null;
+    }
+    return "Description needs to have Character more than 3";
+  }
+
   dynamic get emailValidation {
     RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
