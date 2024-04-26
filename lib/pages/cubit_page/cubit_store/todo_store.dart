@@ -2,6 +2,7 @@
 
 import 'dart:math';
 import 'package:flutter_application_1/utils/common_function.dart';
+import 'package:flutter_application_1/utils/validation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TodoModel {
@@ -32,29 +33,51 @@ class TodoModel {
 class CubitTododModel {
   List<TodoModel> todoList;
   List<int> todoIds;
+  bool isTriggerValidate;
+  List<Map<String, dynamic>>? inputPropsData;
+  Map<String, dynamic>? init;
 
-  CubitTododModel({required this.todoList, required this.todoIds});
+  CubitTododModel({
+    required this.todoList,
+    required this.todoIds,
+    this.isTriggerValidate = false,
+    this.inputPropsData,
+    this.init,
+  });
 }
 
 class TodoStore extends Cubit<CubitTododModel> {
   TodoStore()
-      : super(CubitTododModel(
-          todoList: [
-            TodoModel(
-              title: "First Task",
-              description: "Test Description",
-              id: Random().nextInt(1000),
-            ),
-            TodoModel(
-              title: "Second Task",
-              is_completed: true,
-              description:
-                  "You can wrap your existing Padding widget with another Padding widget to add margins around the existing widget. Here's how you can do it:",
-              id: Random().nextInt(1000),
-            ),
-          ],
-          todoIds: [],
-        ));
+      : super(CubitTododModel(todoList: [
+          TodoModel(
+            title: "First Task",
+            description: "Test Description",
+            id: Random().nextInt(1000),
+          ),
+          TodoModel(
+            title: "Second Task",
+            is_completed: true,
+            description:
+                "You can wrap your existing Padding widget with another Padding widget to add margins around the existing widget. Here's how you can do it:",
+            id: Random().nextInt(1000),
+          ),
+        ], todoIds: [], inputPropsData: [
+          {
+            "id": "1",
+            "name": "title",
+            "validation": (String value) => value.titleValidation,
+            "obscureText": false
+          },
+          {
+            "id": "2",
+            "name": "description",
+            "validation": (String value) => value.descriptionvalidation,
+            "obscureText": false
+          }
+        ], init: {
+          "title": "",
+          "description": ""
+        }));
 
   void addTodo(Map<String, String> input) {
     TodoModel data = TodoModel(
@@ -97,5 +120,11 @@ class TodoStore extends Cubit<CubitTododModel> {
       emit(CubitTododModel(
           todoList: state.todoList, todoIds: [...state.todoIds, id]));
     }
+  }
+
+  void handleSave(String? value, String key) {
+    state.init?[key] ??= value;
+    emit(CubitTododModel(
+        todoList: state.todoList, todoIds: state.todoIds, init: state.init));
   }
 }

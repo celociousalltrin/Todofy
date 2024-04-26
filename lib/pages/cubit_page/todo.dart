@@ -32,14 +32,6 @@ class _TodoPageState extends State<TodoPage> {
 
   final formkey = GlobalKey<FormState>();
 
-  bool isTrigerValidate = false;
-
-  Map<String, dynamic> result = {"title": "", "description": ""};
-
-  void handleSave(String? value, String key) {
-    result[key] = value;
-  }
-
   void handleCloseModal() {
     Navigator.of(context).pop();
   }

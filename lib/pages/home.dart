@@ -101,7 +101,6 @@ class _HomepageState extends State<Homepage> {
               return AppModel(
                   inputPropsData: inputPropsData,
                   handleClose: handleClose,
-                  handleAddData: handleAddData,
                   formKey: formkey,
                   isTrigerValidate: isTrigerValidate,
                   handleSave: handleSave,

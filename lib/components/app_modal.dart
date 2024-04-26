@@ -5,7 +5,6 @@ import 'package:flutter_application_1/components/app_input.dart';
 class AppModel extends StatefulWidget {
   final List<Map<String, dynamic>> inputPropsData;
   final void Function() handleClose;
-  final void Function(String) handleAddData;
   final GlobalKey<FormState> formKey;
   final bool isTrigerValidate;
   final void Function(String?, String) handleSave;
@@ -15,7 +14,6 @@ class AppModel extends StatefulWidget {
   const AppModel(
       {super.key,
       required this.handleClose,
-      required this.handleAddData,
       required this.formKey,
       required this.handleSave,
       required this.onCreate,
