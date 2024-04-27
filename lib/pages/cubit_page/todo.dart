@@ -16,37 +16,39 @@ class _TodoPageState extends State<TodoPage> {
 
   final formkey = GlobalKey<FormState>();
 
-  void handleCloseModal() {
+  void handleCloseModal(TodoStore todoState) {
     Navigator.of(context).pop();
+    todoState.triggerValidate(false);
   }
 
   void onCreate(StateSetter stflbrSetState, TodoStore todoState) {
     if (formkey.currentState!.validate()) {
       formkey.currentState!.save();
       todoState.addTodo();
-      handleCloseModal();
+      handleCloseModal(todoState);
     } else {
       stflbrSetState(() {
-        todoState.triggerValidate();
+        todoState.triggerValidate(true);
       });
     }
   }
 
-  void handleOpenModal(
-      List<Map<String, dynamic>> inputPropsData, TodoStore todoState) {
+  void handleOpenModal(TodoStore todoState) {
     showDialog(
         context: context,
         builder: (context) {
           return StatefulBuilder(
               builder: (context, StateSetter stflbrSetState) {
             return AppModel(
-                handleClose: handleCloseModal,
+                handleClose: () {
+                  handleCloseModal(todoState);
+                },
                 formKey: formkey,
                 handleSave: todoState.handleSave,
                 onCreate: () {
                   onCreate(stflbrSetState, todoState);
                 },
-                inputPropsData: inputPropsData,
+                inputPropsData: todoState.state.inputPropsData!,
                 modelTitle: "Cubit Add To do",
                 isTrigerValidate: todoState.state.isTriggerValidate);
           });
@@ -57,34 +59,34 @@ class _TodoPageState extends State<TodoPage> {
   Widget build(BuildContext context) {
     final todoState = TodoStore();
     return Scaffold(
-      body: BlocBuilder<TodoStore, CubitTododModel>(
-          bloc: todoState,
-          builder: (context, todos) {
-            return Column(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "CUBIT TODO LIST",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      AppButton(
-                        onPressed: () {
-                          handleOpenModal(todos.inputPropsData!, todoState);
-                        },
-                        btnName: "ADD TODO",
-                      )
-                    ],
-                  ),
+                const Text(
+                  "CUBIT TODO LIST",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold),
                 ),
-                Expanded(
-                  child: ListView.builder(
+                AppButton(
+                  onPressed: () {
+                    handleOpenModal(todoState);
+                  },
+                  btnName: "ADD TODO",
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            child: BlocBuilder<TodoStore, CubitTododModel>(
+                bloc: todoState,
+                builder: (context, todos) {
+                  return ListView.builder(
                       itemCount: todos.todoList.length,
                       itemBuilder: (context, index) {
                         TodoModel todo = todos.todoList[index];
@@ -178,11 +180,11 @@ class _TodoPageState extends State<TodoPage> {
                             ],
                           ),
                         );
-                      }),
-                ),
-              ],
-            );
-          }),
+                      });
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

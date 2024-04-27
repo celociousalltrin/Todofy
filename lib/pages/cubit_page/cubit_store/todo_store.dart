@@ -144,12 +144,12 @@ class TodoStore extends Cubit<CubitTododModel> {
     ));
   }
 
-  void triggerValidate() {
+  void triggerValidate(bool value) {
     emit(CubitTododModel(
         todoList: state.todoList,
         todoIds: state.todoIds,
         inputPropsData: state.inputPropsData,
         init: state.init,
-        isTriggerValidate: true));
+        isTriggerValidate: value));
   }
 }
