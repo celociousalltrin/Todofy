@@ -41,8 +41,8 @@ class CubitTododModel {
     required this.todoList,
     required this.todoIds,
     this.isTriggerValidate = false,
-    this.inputPropsData,
-    this.init,
+    required this.inputPropsData,
+    required this.init,
   });
 }
 
@@ -72,59 +72,84 @@ class TodoStore extends Cubit<CubitTododModel> {
             "id": "2",
             "name": "description",
             "validation": (String value) => value.descriptionvalidation,
-            "obscureText": false
+            "obscureText": false,
+            "isMultiLineText": true,
           }
         ], init: {
           "title": "",
           "description": ""
         }));
 
-  void addTodo(Map<String, String> input) {
+  void addTodo() {
     TodoModel data = TodoModel(
-        title: input["title"]!,
-        description: input["description"]!,
+        title: state.init!["title"],
+        description: state.init!["description"],
         id: Random().nextInt(1000));
 
     emit(CubitTododModel(
-      todoList: [...state.todoList, data],
-      todoIds: state.todoIds,
-    ));
+        todoList: [...state.todoList, data],
+        todoIds: state.todoIds,
+        inputPropsData: state.inputPropsData,
+        init: state.init));
   }
 
   void deleteTodo(int id) {
     emit(CubitTododModel(
         todoList: updateList(
             data: state.todoList, id: id, todo: {"is_deleted": true}),
-        todoIds: state.todoIds));
+        todoIds: state.todoIds,
+        inputPropsData: state.inputPropsData,
+        init: state.init));
   }
 
   void toggleCompleteTodo(int id, bool value) {
     emit(CubitTododModel(
         todoList: updateList(
             data: state.todoList, id: id, todo: {"is_completed": !value}),
-        todoIds: state.todoIds));
+        todoIds: state.todoIds,
+        inputPropsData: state.inputPropsData,
+        init: state.init));
   }
 
   void updateTodo({required int id, required Map<String, String> data}) {
     emit(CubitTododModel(
         todoList: updateList(data: state.todoList, id: id, todo: data),
-        todoIds: state.todoIds));
+        todoIds: state.todoIds,
+        inputPropsData: state.inputPropsData,
+        init: state.init));
   }
 
   void viewDescription(int id) {
     if (state.todoIds.contains(id)) {
       emit(CubitTododModel(
           todoList: state.todoList,
+          inputPropsData: state.inputPropsData,
+          init: state.init,
           todoIds: state.todoIds.where((element) => element != id).toList()));
     } else {
       emit(CubitTododModel(
-          todoList: state.todoList, todoIds: [...state.todoIds, id]));
+          todoList: state.todoList,
+          todoIds: [...state.todoIds, id],
+          inputPropsData: state.inputPropsData,
+          init: state.init));
     }
   }
 
   void handleSave(String? value, String key) {
-    state.init?[key] ??= value;
     emit(CubitTododModel(
-        todoList: state.todoList, todoIds: state.todoIds, init: state.init));
+      todoList: state.todoList,
+      todoIds: state.todoIds,
+      init: {...state.init!, key: value},
+      inputPropsData: state.inputPropsData,
+    ));
+  }
+
+  void triggerValidate() {
+    emit(CubitTododModel(
+        todoList: state.todoList,
+        todoIds: state.todoIds,
+        inputPropsData: state.inputPropsData,
+        init: state.init,
+        isTriggerValidate: true));
   }
 }

@@ -38,7 +38,6 @@ class _AppModelState extends State<AppModel> {
       ),
       backgroundColor: Colors.yellow.shade300,
       content: SizedBox(
-        height: 420,
         child: Scrollbar(
           child: SingleChildScrollView(
             child: Padding(
@@ -53,6 +52,7 @@ class _AppModelState extends State<AppModel> {
                               item["name"]![0].toUpperCase() +
                                   item["name"]!.substring(1);
                           return AppCustomInput(
+                              isMultiLineText: item["isMultiLineText"] ?? false,
                               hintText: "Enter $capitalizeTitle",
                               title: capitalizeTitle,
                               validator: (value) {
