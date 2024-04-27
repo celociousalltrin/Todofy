@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_modal.dart';
 import 'package:flutter_application_1/pages/cubit_page/cubit_store/todo_store.dart';
-import 'package:flutter_application_1/utils/validation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TodoPage extends StatefulWidget {
