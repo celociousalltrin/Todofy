@@ -8,20 +8,18 @@ class CounterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final counterState = CounterStore();
+    final counterState = BlocProvider.of<CounterStore>(context);
     return Scaffold(
         body: Center(
             child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        BlocBuilder<CounterStore, int>(
-            bloc: counterState,
-            builder: (context, counter) {
-              return Text(
-                counter.toString(),
-                style: const TextStyle(color: Colors.black, fontSize: 36),
-              );
-            }),
+        BlocBuilder<CounterStore, int>(builder: (context, counter) {
+          return Text(
+            counter.toString(),
+            style: const TextStyle(color: Colors.black, fontSize: 36),
+          );
+        }),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -12,8 +12,6 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  List<int> todoIds = [];
-
   final formkey = GlobalKey<FormState>();
 
   void handleCloseModal(TodoStore todoState) {
@@ -57,7 +55,7 @@ class _TodoPageState extends State<TodoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final todoState = TodoStore();
+    final todoState = BlocProvider.of<TodoStore>(context);
     return Scaffold(
       body: Column(
         children: [
@@ -84,104 +82,99 @@ class _TodoPageState extends State<TodoPage> {
           ),
           Expanded(
             child: BlocBuilder<TodoStore, CubitTododModel>(
-                bloc: todoState,
                 builder: (context, todos) {
-                  return ListView.builder(
-                      itemCount: todos.todoList.length,
-                      itemBuilder: (context, index) {
-                        TodoModel todo = todos.todoList[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: todo.is_deleted
-                                  ? Colors.red[400]
-                                  : todo.is_completed
-                                      ? Colors.lightGreen[500]
-                                      : Colors.amber[200],
-                              border:
-                                  Border.all(width: 1.0, color: Colors.black)),
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+              return ListView.builder(
+                  itemCount: todos.todoList.length,
+                  itemBuilder: (context, index) {
+                    TodoModel todo = todos.todoList[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: todo.is_deleted
+                              ? Colors.red[400]
+                              : todo.is_completed
+                                  ? Colors.lightGreen[500]
+                                  : Colors.amber[200],
+                          border: Border.all(width: 1.0, color: Colors.black)),
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    todo.title,
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          todoState.toggleCompleteTodo(
-                                              todo.id, todo.is_completed);
-                                        },
-                                        child: Icon(
-                                          todo.is_completed
-                                              ? Icons.check_circle
-                                              : Icons
-                                                  .check_circle_outline_outlined,
-                                          size: 28.0,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 15),
-                                      GestureDetector(
-                                        onTap: () {
-                                          todoState.deleteTodo(todo.id);
-                                        },
-                                        child: const Icon(
-                                          Icons.delete,
-                                          size: 26.0,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                              Text(
+                                todo.title,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
                               ),
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: todo.description.length > 80 &&
-                                              !todos.todoIds.contains(todo.id)
-                                          ? "${todo.description.substring(0, 80)}..."
-                                          : todo.description,
-                                      style:
-                                          const TextStyle(color: Colors.black),
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      todoState.toggleCompleteTodo(
+                                          todo.id, todo.is_completed);
+                                    },
+                                    child: Icon(
+                                      todo.is_completed
+                                          ? Icons.check_circle
+                                          : Icons.check_circle_outline_outlined,
+                                      size: 28.0,
+                                      color: Colors.black,
                                     ),
-                                    if (todo.description.length > 80)
-                                      WidgetSpan(
-                                        alignment: PlaceholderAlignment.middle,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            todoState.viewDescription(todo.id);
-                                          },
-                                          child: Icon(
-                                            todos.todoIds.contains(todo.id)
-                                                ? Icons.arrow_upward
-                                                : Icons.arrow_downward,
-                                            size: 22,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(width: 15),
+                                  GestureDetector(
+                                    onTap: () {
+                                      todoState.deleteTodo(todo.id);
+                                    },
+                                    child: const Icon(
+                                      Icons.delete,
+                                      size: 26.0,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
                               )
                             ],
                           ),
-                        );
-                      });
-                }),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: todo.description.length > 80 &&
+                                          !todos.todoIds.contains(todo.id)
+                                      ? "${todo.description.substring(0, 80)}..."
+                                      : todo.description,
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                                if (todo.description.length > 80)
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.middle,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        todoState.viewDescription(todo.id);
+                                      },
+                                      child: Icon(
+                                        todos.todoIds.contains(todo.id)
+                                            ? Icons.arrow_upward
+                                            : Icons.arrow_downward,
+                                        size: 22,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  });
+            }),
           ),
         ],
       ),
