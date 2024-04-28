@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/List_container.dart';
+import 'package:flutter_application_1/components/app_drawer.dart';
 import 'package:flutter_application_1/components/app_modal.dart';
 import 'package:flutter_application_1/utils/validation.dart';
 
@@ -130,6 +131,7 @@ class _HomepageState extends State<Homepage> {
             size: 36,
           ),
         ),
+        drawer: const AppDrawer(),
         body: ListView.builder(
             itemCount: myData.length,
             itemBuilder: (context, index) {

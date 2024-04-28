@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/utils/common_data.dart';
+import 'package:go_router/go_router.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -22,8 +23,8 @@ class AppDrawer extends StatelessWidget {
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
                 onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushNamed(context, item["route"]);
+                  Navigator.pop(context);
+                  context.goNamed(item["route"]);
                 },
               ),
             )

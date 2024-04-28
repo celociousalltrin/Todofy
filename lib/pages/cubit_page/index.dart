@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/app_drawer.dart';
 import 'package:flutter_application_1/pages/cubit_page/counter.dart';
 import 'package:flutter_application_1/pages/cubit_page/cubit_store/counter_store.dart';
 import 'package:flutter_application_1/pages/cubit_page/cubit_store/todo_store.dart';
@@ -35,6 +36,7 @@ class _CubitPageState extends State<CubitPage> {
           centerTitle: true,
         ),
         body: isToggle ? const TodoPage() : const CounterPage(),
+        drawer: const AppDrawer(),
         floatingActionButton: FloatingActionButton(
           onPressed: updateToggle,
           backgroundColor: Colors.amber[300],

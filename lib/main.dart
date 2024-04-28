@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/index.dart';
-import 'package:flutter_application_1/utils/common_data.dart';
+import 'package:flutter_application_1/routes/index.dart';
 
 void main() {
   runApp(const MainApp());
@@ -15,13 +14,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final MyAppRouter myAppRouter = MyAppRouter();
+    return MaterialApp.router(
       title: "My FLutter App",
       theme: myTheme,
       debugShowCheckedModeBanner: false,
-      initialRoute: "/",
-      routes: appRoutes,
-      home: const AppMainPage(),
+      routeInformationParser: myAppRouter.router.routeInformationParser,
+      routerDelegate: myAppRouter.router.routerDelegate,
+      routeInformationProvider: myAppRouter.router.routeInformationProvider,
     );
   }
 }
