@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/service/api_config.dart';
 
 class ApiViewPage extends StatefulWidget {
   final int id;
@@ -21,7 +22,7 @@ class _ApiViewPageState extends State<ApiViewPage> {
   void getTodo(int id) async {
     try {
       Response<dynamic> response =
-          await dio.get("http://192.168.1.3:5000/todos/${widget.id}");
+          await DioClient.instance.get("/todos/${widget.id}");
       setState(() {
         todo = response.data;
       });

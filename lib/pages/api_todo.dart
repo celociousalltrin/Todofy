@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_drawer.dart';
+import 'package:flutter_application_1/service/api_config.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -25,7 +26,7 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
 
   void getData() async {
     try {
-      final response = await dio.get("http://192.168.1.3:5000/todos");
+      final response = await DioClient.instance.get("/todos");
 
       setState(() {
         myList = response.data;
@@ -73,7 +74,10 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
         padding: const EdgeInsets.only(top: 15.0),
         child: Column(
           children: [
-            AppButton(onPressed: () {}, btnName: "ADD API TODOD"),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: AppButton(onPressed: () {}, btnName: "ADD API TODOD"),
+            ),
             Expanded(
               child: ListView.builder(
                   itemCount: myList.length,
