@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class ApiViewPage extends StatefulWidget {
@@ -9,6 +10,26 @@ class ApiViewPage extends StatefulWidget {
 }
 
 class _ApiViewPageState extends State<ApiViewPage> {
+  final dio = Dio();
+  Map todo = {};
+  @override
+  void initState() {
+    super.initState();
+    getTodo(widget.id);
+  }
+
+  void getTodo(int id) async {
+    try {
+      Response<dynamic> response =
+          await dio.get("http://192.168.1.3:5000/todos/${widget.id}");
+      setState(() {
+        todo = response.data;
+      });
+    } catch (err) {
+      print("ERROR is : $err");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,10 +38,28 @@ class _ApiViewPageState extends State<ApiViewPage> {
         backgroundColor: Colors.yellow,
         centerTitle: true,
       ),
-      body: Center(
-        child: Text("This is Single AppBar ${widget.id}",
-            style: const TextStyle(color: Colors.black)),
-      ),
+      body: todo.isEmpty
+          ? const Center(
+              child: Text(
+                "Loading...",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold),
+              ),
+            )
+          : Column(
+              children: [
+                Text(
+                  todo["title"],
+                  style: const TextStyle(color: Colors.black),
+                ),
+                Text(
+                  todo["description"],
+                  style: const TextStyle(color: Colors.black),
+                )
+              ],
+            ),
     );
   }
 }
