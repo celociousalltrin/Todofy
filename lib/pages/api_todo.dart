@@ -1,8 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_drawer.dart';
 import 'package:flutter_application_1/service/api_config.dart';
+import 'package:flutter_application_1/service/methods.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -14,8 +14,6 @@ class ApiTodoPage extends StatefulWidget {
 }
 
 class _ApiTodoPageState extends State<ApiTodoPage> {
-  final dio = Dio();
-
   List<dynamic> myList = [];
 
   @override
@@ -26,7 +24,7 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
 
   void getData() async {
     try {
-      final response = await DioClient.instance.get("/todos");
+      final response = await getTodos();
 
       setState(() {
         myList = response.data;
@@ -38,8 +36,8 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
 
   void toggleComplete(dynamic id, Map data) async {
     try {
-      final response = await dio.put("http://192.168.1.3:5000/todos/$id",
-          data: {...data, "is_completed": !data["is_completed"]});
+      final response = await toggleCompleteTodo(
+          id, {...data, "is_completed": !data["is_completed"]});
       setState(() {
         myList = myList.map((item) {
           if (item["id"] == id) {
