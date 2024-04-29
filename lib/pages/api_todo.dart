@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_drawer.dart';
-import 'package:flutter_application_1/service/api_config.dart';
-import 'package:flutter_application_1/service/methods.dart';
+import 'package:flutter_application_1/pages/api_store.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -14,42 +14,12 @@ class ApiTodoPage extends StatefulWidget {
 }
 
 class _ApiTodoPageState extends State<ApiTodoPage> {
-  List<dynamic> myList = [];
-
   @override
   void initState() {
     super.initState();
-    getData();
-  }
-
-  void getData() async {
-    try {
-      final response = await getTodos();
-
-      setState(() {
-        myList = response.data;
-      });
-    } catch (err) {
-      print("ERROR is : $err");
-    }
-  }
-
-  void toggleComplete(dynamic id, Map data) async {
-    try {
-      final response = await toggleCompleteTodo(
-          id, {...data, "is_completed": !data["is_completed"]});
-      setState(() {
-        myList = myList.map((item) {
-          if (item["id"] == id) {
-            return response.data;
-          } else {
-            return item;
-          }
-        }).toList();
-      });
-    } catch (err) {
-      print("Error is :$err");
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<ApiTodoStore>(context).getTodoList();
+    });
   }
 
   String formatCustomDateTime(DateTime dateTime) {
@@ -59,6 +29,7 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final apiTodoState = BlocProvider.of<ApiTodoStore>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -76,11 +47,12 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
               padding: const EdgeInsets.only(bottom: 10),
               child: AppButton(onPressed: () {}, btnName: "ADD API TODOD"),
             ),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: myList.length,
+            Expanded(child: BlocBuilder<ApiTodoStore, ApiTodoModel>(
+                builder: (context, todos) {
+              return ListView.builder(
+                  itemCount: todos.todoList.length,
                   itemBuilder: (context, index) {
-                    Map<String, dynamic> todo = myList[index];
+                    SingleTodoModel todo = todos.todoList[index];
                     // final DateFormat formatter = DateFormat('yyyy-MM-dd');
                     // final String formatted = formatter.format(todo["created_at"]);
                     return Padding(
@@ -88,14 +60,14 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
                       child: GestureDetector(
                         onTap: () {
                           context.goNamed("api-todo-id",
-                              pathParameters: {"id": todo["id"]});
+                              pathParameters: {"id": todo.id});
                         },
                         child: Container(
                             height: 82,
                             padding: const EdgeInsets.only(left: 10, right: 10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: todo["is_completed"]
+                                color: todo.is_completed
                                     ? Colors.greenAccent
                                     : Colors.amber[300],
                                 border: Border.all(
@@ -105,7 +77,7 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    todo["title"],
+                                    todo.title,
                                     style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 22,
@@ -118,7 +90,7 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
                                     children: [
                                       Text(
                                         formatCustomDateTime(
-                                            DateTime.parse(todo["created_at"])),
+                                            DateTime.parse(todo.created_at)),
                                         style: const TextStyle(
                                             color: Colors.black, fontSize: 18),
                                         overflow: TextOverflow.ellipsis,
@@ -130,11 +102,11 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
                                                 right: 10),
                                             child: GestureDetector(
                                               onTap: () {
-                                                toggleComplete(
-                                                    todo["id"], todo);
+                                                apiTodoState.completeTodo(
+                                                    todo.id, todo);
                                               },
                                               child: Icon(
-                                                todo["is_completed"]
+                                                todo.is_completed
                                                     ? Icons.check_circle
                                                     : Icons
                                                         .check_circle_outline_outlined,
@@ -159,8 +131,8 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
                                 ])),
                       ),
                     );
-                  }),
-            ),
+                  });
+            })),
           ],
         ),
       ),
