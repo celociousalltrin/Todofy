@@ -26,7 +26,6 @@ List<SingleTodoModel> updateApiTodoList({
   required dynamic id,
   required Map todo,
 }) {
-  print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
   return data.map((item) {
     if (item.id == id) {
       return SingleTodoModel(

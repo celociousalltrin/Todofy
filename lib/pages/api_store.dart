@@ -1,11 +1,11 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, constant_identifier_names
 
 import 'package:flutter_application_1/service/methods.dart';
 import 'package:flutter_application_1/utils/common_function.dart';
 import 'package:flutter_application_1/utils/validation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-List<Map> inputPropsData = [
+List<Map<String, dynamic>> inputPropsData = [
   {
     "id": "1",
     "name": "title",
@@ -21,7 +21,13 @@ List<Map> inputPropsData = [
   }
 ];
 
-Map init = {"title": "", "description": ""};
+Map init = {
+  "title": "",
+  "description": "",
+  "created_at": DateTime.now().toString(),
+  "is_completed": false,
+  "is_deleted": false
+};
 
 class SingleTodoModel {
   final dynamic id;
@@ -93,6 +99,25 @@ class ApiTodoStore extends Cubit<ApiTodoModel> {
     }
   }
 
+  void addApiTodo() async {
+    try {
+      final res = await createTodo(state.init);
+      final response = res.data;
+      emit(ApiTodoModel(todoList: [
+        SingleTodoModel(
+            id: response["id"],
+            title: response["title"],
+            description: response["description"],
+            created_at: response["created_at"],
+            is_completed: response["is_completed"],
+            is_deleted: response["is_deleted"]),
+        ...state.todoList
+      ], inputPropsData: inputPropsData, init: init));
+    } catch (err) {
+      print("ERROR is $err");
+    }
+  }
+
   void completeTodo(dynamic id, SingleTodoModel data) async {
     try {
       final response = await toggleCompleteTodo(
@@ -128,5 +153,30 @@ class ApiTodoStore extends Cubit<ApiTodoModel> {
     } catch (err) {
       print("ERROR is :$err");
     }
+  }
+
+  void deleteTodo(dynamic id) {
+    emit(ApiTodoModel(
+        todoList: state.todoList.where((item) => item.id != id).toList(),
+        inputPropsData: inputPropsData,
+        init: init));
+  }
+
+  void triggervalidate(bool value) {
+    emit(ApiTodoModel(
+        todoList: state.todoList,
+        inputPropsData: inputPropsData,
+        init: init,
+        isTriggerValidate: value));
+  }
+
+  void hanldeSave(
+    String? value,
+    String key,
+  ) {
+    emit(ApiTodoModel(
+        todoList: state.todoList,
+        inputPropsData: inputPropsData,
+        init: {...state.init, key: value}));
   }
 }

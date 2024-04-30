@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_drawer.dart';
+import 'package:flutter_application_1/components/app_modal.dart';
 import 'package:flutter_application_1/pages/api_store.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,8 @@ class ApiTodoPage extends StatefulWidget {
 }
 
 class _ApiTodoPageState extends State<ApiTodoPage> {
+  final formkey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -22,9 +25,48 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
     });
   }
 
+  void handleCloseModal(ApiTodoStore apiState) {
+    Navigator.of(context).pop();
+    apiState.triggervalidate(false);
+  }
+
+  void onCreate(StateSetter stflbrSetState, ApiTodoStore apiState) {
+    if (formkey.currentState!.validate()) {
+      formkey.currentState!.save();
+      apiState.addApiTodo();
+      handleCloseModal(apiState);
+    } else {
+      stflbrSetState(() {
+        apiState.triggervalidate(true);
+      });
+    }
+  }
+
   String formatCustomDateTime(DateTime dateTime) {
     final DateFormat formatter = DateFormat('dd MMM HH:mm');
     return formatter.format(dateTime);
+  }
+
+  void handleOpenModal(ApiTodoStore apiState) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context, StateSetter stflbrSetState) {
+            return AppModel(
+                handleClose: () {
+                  handleCloseModal(apiState);
+                },
+                formKey: formkey,
+                handleSave: apiState.hanldeSave,
+                onCreate: () {
+                  onCreate(stflbrSetState, apiState);
+                },
+                inputPropsData: inputPropsData,
+                modelTitle: "Add Api Todo",
+                isTrigerValidate: apiState.state.isTriggerValidate);
+          });
+        });
   }
 
   @override
@@ -45,7 +87,11 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: AppButton(onPressed: () {}, btnName: "ADD API TODOD"),
+              child: AppButton(
+                  onPressed: () {
+                    handleOpenModal(apiTodoState);
+                  },
+                  btnName: "ADD API TODOD"),
             ),
             Expanded(child: BlocBuilder<ApiTodoStore, ApiTodoModel>(
                 builder: (context, todos) {
@@ -53,8 +99,6 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
                   itemCount: todos.todoList.length,
                   itemBuilder: (context, index) {
                     SingleTodoModel todo = todos.todoList[index];
-                    // final DateFormat formatter = DateFormat('yyyy-MM-dd');
-                    // final String formatted = formatter.format(todo["created_at"]);
                     return Padding(
                       padding: const EdgeInsets.all(7.0),
                       child: GestureDetector(
@@ -116,7 +160,7 @@ class _ApiTodoPageState extends State<ApiTodoPage> {
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              print("Delete Icon is Pressed");
+                                              apiTodoState.deleteTodo(todo.id);
                                             },
                                             child: const Icon(
                                               Icons.delete,
