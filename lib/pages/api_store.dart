@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, constant_identifier_names
 
+import 'dart:math';
+
 import 'package:flutter_application_1/service/methods.dart';
 import 'package:flutter_application_1/utils/common_function.dart';
 import 'package:flutter_application_1/utils/validation.dart';
@@ -22,6 +24,7 @@ List<Map<String, dynamic>> inputPropsData = [
 ];
 
 Map init = {
+  "id": Random().nextInt(10000).toString(),
   "title": "",
   "description": "",
   "created_at": DateTime.now().toString(),
@@ -104,6 +107,7 @@ class ApiTodoStore extends Cubit<ApiTodoModel> {
       final res = await createTodo(state.init);
       final response = res.data;
       emit(ApiTodoModel(todoList: [
+        ...state.todoList,
         SingleTodoModel(
             id: response["id"],
             title: response["title"],
@@ -111,7 +115,6 @@ class ApiTodoStore extends Cubit<ApiTodoModel> {
             created_at: response["created_at"],
             is_completed: response["is_completed"],
             is_deleted: response["is_deleted"]),
-        ...state.todoList
       ], inputPropsData: inputPropsData, init: init));
     } catch (err) {
       print("ERROR is $err");
